@@ -1,0 +1,40 @@
+div#book-image {
+  min-width: 300px !important;
+  min-height: 440px !important;
+}
+div#book-image img {
+  margin: auto;
+}
+
+p#book-ranking {
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+p#book-title {
+  max-width: 350px;
+  font-size: 20px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+p#book-category {
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+p#curation-title {
+  font-size: 30px;
+  font-weight: 700;
+  text-align: left;
+  margin-left: 25px;
+  color: #301fbf;
+}
+
+h4 {
+  color: #301fbf;
+  font-weight: 700;
+}
