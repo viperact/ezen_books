@@ -3,9 +3,8 @@ import "../css/style.css";
 import "../css/carousel.css";
 import React from "react";
 import Carousel from "better-react-carousel";
-import Login from "../login/login";
 
-const CarouselPage = () => {
+export const EventBanner = () => {
   return (
     <div className='carousel container-fluid mt-4'>
       <p id='Carousel-title'>
@@ -143,5 +142,4 @@ const CarouselPage = () => {
     </div>
   );
 };
-
-export default CarouselPage;
+export default EventBanner;

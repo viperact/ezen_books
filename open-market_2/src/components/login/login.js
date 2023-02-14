@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { baseUrl } from "../commonApi/booksApi";
+import { baseUrl } from "../commonApi/todoApi";
 
 //import { useNavigate } from "react-router-dom";
 
@@ -37,9 +37,9 @@ const Login = () => {
         console.log(response.data);
 
         // 값을 받을때는 소문자
-        // let jwtToken = response.headers["Authorization"];
+        let jwtToken = response.headers["Authorization"];
         console.log(response.headers["Access-Control-Allow-Credentials"]);
-        let jwtToken = response.headers.get("Authorization");
+        // let jwtToken = response.headers.get("Authorization");
 
         let jwtUsername = response.data.username;
         console.log("jwtToken", jwtToken);

@@ -4,8 +4,10 @@ import Home from "./routes/Home";
 import Category from "./routes/Category";
 import BookDetail from "./routes/BookDetail";
 import Bestseller from "./routes/Bestseller";
-import LoginPage from "./login/login";
+
 import RegisterPage from "./login/register";
+import Login from "./login/login";
+import LogOut from "./login/logout";
 
 const App = () => {
   return (
@@ -16,8 +18,9 @@ const App = () => {
         <Route path='/category' element={<Category />} />
         <Route path='/bookdetail' element={<BookDetail />} />
         <Route path='/bestseller' element={<Bestseller />} />
-        <Route path='/loginPage' element={<LoginPage />} />
+        <Route path='/loginPage' element={<Login />} />
         <Route path='/registerPage' element={<RegisterPage />} />
+        <Route path='logout' element={<LogOut />} />
       </Routes>
     </div>
   );

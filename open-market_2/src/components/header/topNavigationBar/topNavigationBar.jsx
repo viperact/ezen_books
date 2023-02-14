@@ -1,6 +1,6 @@
-import "../css/bootstrap.min.css";
-import "../css/style.css";
-import "../css/mainmenu.css";
+import "../../css/bootstrap.min.css";
+import "../../css/style.css";
+import "./topNavigationBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartShopping,
@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-const MainMenu = () => {
+export const TopNavigationBar = () => {
   return (
     <div className='main-menu'>
       <div className='container-fluid'>
@@ -17,7 +17,7 @@ const MainMenu = () => {
           <div className='col-xl-2 col-lg-2 mt-4 mb-4'>
             <div className='header__logo'>
               <a href='/'>
-                <img src='img/MainLogo.png' alt='Main Logos' />
+                <img src='images/MainLogo.png' alt='Main Logos' />
               </a>
             </div>
           </div>
@@ -116,25 +116,25 @@ const MainMenu = () => {
           </div>
           <div className='col-xl-2 col-lg-2 container colums-row'>
             <div className='header__right'>
-              <div className='header__right__auth'></div>
+              <div className='header__right__auth'>
+                {localStorage.getItem("username") !== null ? (
+                  <div>
+                    <Link className='nav-link' to='/logout'>
+                      {localStorage.getItem("username") + " LOGOUT"}
+                    </Link>
+                  </div>
+                ) : (
+                  <div>
+                    <Link to='/loginPage'>
+                      <span>Login</span>
+                    </Link>
 
-              {localStorage.getItem("username") !== null ? (
-                <div>
-                  <Link className='nav-link' to='/logout'>
-                    {localStorage.getItem("username") + " LOGOUT"}
-                  </Link>
-                </div>
-              ) : (
-                <div>
-                  <Link to='/loginPage'>
-                    <span>Login</span>
-                  </Link>
-
-                  <Link to='registerPage'>
-                    <span>Register</span>
-                  </Link>
-                </div>
-              )}
+                    <Link to='registerPage'>
+                      <span>Register</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
 
               <div className='row'>
                 <div className='header__right__widget container d-flex'>
@@ -143,11 +143,13 @@ const MainMenu = () => {
                       <FontAwesomeIcon icon={faUser} size='3x' />
                     </a>
                   </div>
-                  <div className='fontawsome' id='faCartShopping'>
-                    <a href='#'>
-                      <FontAwesomeIcon icon={faCartShopping} size='3x' />
-                    </a>
-                  </div>
+                  <Link to='/cart'>
+                    <div className='fontawsome' id='faCartShopping'>
+                      <a href='#'>
+                        <FontAwesomeIcon icon={faCartShopping} size='3x' />
+                      </a>
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -158,4 +160,4 @@ const MainMenu = () => {
   );
 };
 
-export default MainMenu;
+export default TopNavigationBar;
