@@ -10,12 +10,15 @@ const RegisterPage = () => {
   const [member, setMember] = useState({
     username: "",
     password: "",
+    passwordCheck: "",
     email: "",
     authRole: "ROLE_MEMBER",
+    passwordError: "",
   });
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
     await axios
       .post(`${baseUrl}/RegisterPage`, member, {
         headers: { "Content-Type": "application/json" },
@@ -40,6 +43,7 @@ const RegisterPage = () => {
     // radio 버튼에서는 e.preventDefault()를 하면 더블클릭을 해줘야한다.
     // e.preventDefault();
     setMember({ ...member, [e.target.name]: e.target.value });
+    const currentId = e.target.value;
   };
 
   return (
@@ -48,6 +52,8 @@ const RegisterPage = () => {
         <div className='container'>
           <h1>회원가입</h1>
           <div className='form-group mb-1'>
+            <label>아이디</label>
+            <br />
             <input
               type='text'
               className='form-control'
@@ -57,6 +63,8 @@ const RegisterPage = () => {
             />
           </div>
           <div className='form-group mb-1'>
+            <label>비밀번호</label>
+            <br />
             <input
               type='password'
               className='form-control'
@@ -66,7 +74,9 @@ const RegisterPage = () => {
               autoComplete='off'
             />
           </div>
+
           <div className='form-group mb-1'>
+            <label>이메일</label>
             <input
               type='email'
               className='form-control'

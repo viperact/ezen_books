@@ -10,6 +10,7 @@ import { baseUrl } from "./components/commonApi/todoApi";
 import Login from "./components/login/login";
 import RegisterPage from "./components/login/register";
 import LogOut from "./components/login/logout";
+import MyPage from "./components/mypage/mypage";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -54,6 +55,7 @@ function App() {
         <Route path='/loginPage' element={<Login />} />
         <Route path='/registerPage' element={<RegisterPage />} />
         <Route path='/logout' element={<LogOut />} />
+        <Route path='/mypage' element={<MyPage />} />
       </Routes>
     </BrowserRouter>
   );

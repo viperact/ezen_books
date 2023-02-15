@@ -1,20 +1,27 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getProducts } from '../../service/fetcher';
-import styles from './detail.module.css';
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getProducts } from "../../service/fetcher";
+import styles from "./detail.module.css";
 
 export const Detail = ({ convertPrice }) => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [count, setCount] = useState(1);
+  const [reviewAdd, setReviewAdd] = useState(false);
 
   const handleQuantity = (type) => {
-    if (type === 'plus') {
+    if (type === "plus") {
       setCount(count + 1);
     } else {
       if (count === 1) return;
       setCount(count - 1);
     }
+  };
+
+  const onClick = () => {
+    setReviewAdd(true);
   };
 
   useEffect(() => {
@@ -41,7 +48,7 @@ export const Detail = ({ convertPrice }) => {
             <p className={styles.seller_store}>{product.book_publisher}</p>
             <p className={styles.product_name}>{product.book_title}</p>
             <span className={styles.price}>
-              {convertPrice(product.book_price + '')}
+              {convertPrice(product.book_price + "")}
               <span className={styles.unit}>원</span>
             </span>
           </div>
@@ -57,7 +64,7 @@ export const Detail = ({ convertPrice }) => {
               className={styles.minus}
               src='/images/icon-minus-line.svg'
               alt='minus'
-              onClick={() => handleQuantity('minus')}
+              onClick={() => handleQuantity("minus")}
             />
 
             <div className={styles.count}>
@@ -68,7 +75,7 @@ export const Detail = ({ convertPrice }) => {
               className={styles.plus}
               src='/images/icon-plus-line.svg'
               alt='plus'
-              onClick={() => handleQuantity('plus')}
+              onClick={() => handleQuantity("plus")}
             />
           </div>
 

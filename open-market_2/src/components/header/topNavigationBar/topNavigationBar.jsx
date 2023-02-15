@@ -139,10 +139,13 @@ export const TopNavigationBar = () => {
               <div className='row'>
                 <div className='header__right__widget container d-flex'>
                   <div className='fontawsome' id='fauser'>
-                    <a href='#'>
-                      <FontAwesomeIcon icon={faUser} size='3x' />
-                    </a>
+                    <Link to='/mypage'>
+                      <a href='#'>
+                        <FontAwesomeIcon icon={faUser} size='3x' />
+                      </a>
+                    </Link>
                   </div>
+
                   <Link to='/cart'>
                     <div className='fontawsome' id='faCartShopping'>
                       <a href='#'>
