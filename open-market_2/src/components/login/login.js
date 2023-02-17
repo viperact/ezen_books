@@ -1,29 +1,29 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { baseUrl } from "../commonApi/todoApi";
+import { baseUrl } from "../commonApi/mainApi";
 
 //import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   // const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [user_name, setUsername] = useState("");
+  const [user_pwd, setUserpwd] = useState("");
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    setUserpwd(e.target.value);
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     await axios
       .post(
-        `${baseUrl}/login`,
-        { username: username, password: password },
+        `${baseUrl}/loginPage`,
+        { user_name: user_name, user_pwd: user_pwd },
         {
           headers: {
             "Content-Type": "application/json",
@@ -41,13 +41,13 @@ const Login = () => {
         console.log(response.headers["Access-Control-Allow-Credentials"]);
         // let jwtToken = response.headers.get("Authorization");
 
-        let jwtUsername = response.data.username;
+        let jwtUsername = response.data.user_name;
         console.log("jwtToken", jwtToken);
         localStorage.setItem("Authorization", jwtToken);
         localStorage.setItem("username", jwtUsername);
 
         setUsername("");
-        setPassword("");
+        setUserpwd("");
       })
       .then((response) => {
         // navigate("/");
@@ -90,7 +90,7 @@ const Login = () => {
             <button type='submit' className='btn btn-primary'>
               로그인
             </button>
-            <Link className='btn btn-primary' to='/RegisterPage'>
+            <Link className='btn btn-primary' to='/registerPage'>
               회원 가입
             </Link>
           </div>

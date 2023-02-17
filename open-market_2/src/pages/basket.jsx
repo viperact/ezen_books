@@ -1,7 +1,7 @@
-import { Cart } from "../components/cart/cart";
+// import { Cart } from "../components/cart/cart";
 
-const Basket = () => {
-  return <Cart />;
-};
+// const Basket = () => {
+//   return <Cart />;
+// };
 
-export default Basket;
+// export default Basket;

@@ -1,6 +1,6 @@
 import styles from "./cart.module.css";
 
-export const Cart = () => {
+export const Kart = () => {
   return (
     <>
       <header className={styles.header}>
@@ -8,7 +8,7 @@ export const Cart = () => {
       </header>
       <div className={styles.cart_title_wrap}>
         <div className={styles.tab_title}>
-          <input type="checkbox" />
+          <input type='checkbox' />
           <span>상품정보</span>
           <span>수량</span>
           <span>상품금액</span>
@@ -18,10 +18,10 @@ export const Cart = () => {
       </div>
 
       <section className={styles.cart_product_list}>
-        <input type="checkbox" />
+        <input type='checkbox' />
         <div className={styles.cart_product_wrap}>
           <div className={styles.cart_product_image}>
-            <img src="images/image001.png" alt="product-img" />
+            <img src='images/image001.png' alt='product-img' />
           </div>
 
           <div className={styles.cart_product_info}>
@@ -35,8 +35,8 @@ export const Cart = () => {
         <div className={styles.cart_product_count}>
           <img
             className={styles.minus}
-            src="/images/icon-minus-line.svg"
-            alt="minus"
+            src='/images/icon-minus-line.svg'
+            alt='minus'
           />
 
           <div className={styles.count}>
@@ -44,8 +44,8 @@ export const Cart = () => {
           </div>
           <img
             className={styles.plus}
-            src="/images/icon-plus-line.svg"
-            alt="plus"
+            src='/images/icon-plus-line.svg'
+            alt='plus'
           />
         </div>
 
@@ -55,7 +55,7 @@ export const Cart = () => {
         </div>
 
         <div className={styles.product_remove}>
-          <img src="/images/icon-delete.svg" alt="delete" />
+          <img src='/images/icon-delete.svg' alt='delete' />
         </div>
       </section>
       <div className={styles.total}>
@@ -64,14 +64,14 @@ export const Cart = () => {
           <p className={styles.cart_product_price}>0</p>
         </div>
         <div className={styles.pay_minus}>
-          <img src="/images/icon-minus-line.svg" alt="minus" />
+          <img src='/images/icon-minus-line.svg' alt='minus' />
         </div>
         <div className={styles.sale}>
           <p className={styles.cart_product_sale}>상품 할인</p>
           <p className={styles.cart_product_sale_price}>0원</p>
         </div>
         <div className={styles.pay_plus}>
-          <img src="/images/icon-plus-line.svg" alt="plus" />
+          <img src='/images/icon-plus-line.svg' alt='plus' />
         </div>
         <div className={styles.delivery}>
           <p className={styles.cart_product_delivery}>배송비</p>

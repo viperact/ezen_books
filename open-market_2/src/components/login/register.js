@@ -1,34 +1,38 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { baseUrl } from "../commonApi/todoApi";
+import { baseUrl } from "../commonApi/mainApi";
 
 //회원가입
 const RegisterPage = () => {
   const navigator = useNavigate();
 
   const [member, setMember] = useState({
-    username: "",
-    password: "",
-    passwordCheck: "",
-    email: "",
-    authRole: "ROLE_MEMBER",
-    passwordError: "",
+    user_id: "",
+    user_name: "",
+    user_pwd: "",
+    user_email: "",
+    user_nickname: "",
+    user_role: "D",
+    create_date: "",
   });
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
     await axios
-      .post(`${baseUrl}/RegisterPage`, member, {
+      .post(`${baseUrl}/registerPage`, member, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
         setMember({
-          username: "",
-          password: "",
-          email: "",
-          authRole: "ROLE_MEMBER",
+          user_id: "",
+          user_name: "",
+          user_pwd: "",
+          user_email: "",
+          user_nickname: "",
+          user_role: "D",
+          create_date: "",
         });
       })
       .then((response) => {
@@ -57,7 +61,7 @@ const RegisterPage = () => {
             <input
               type='text'
               className='form-control'
-              name='username'
+              name='user_name'
               placeholder='Username'
               onChange={handleValueChange}
             />
@@ -68,7 +72,7 @@ const RegisterPage = () => {
             <input
               type='password'
               className='form-control'
-              name='password'
+              name='user_pwd'
               placeholder='Password'
               onChange={handleValueChange}
               autoComplete='off'
@@ -80,7 +84,7 @@ const RegisterPage = () => {
             <input
               type='email'
               className='form-control'
-              name='email'
+              name='user_email'
               placeholder='Email'
               onChange={handleValueChange}
             />
