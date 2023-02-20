@@ -1,0 +1,67 @@
+p {
+  font-size: 18px;
+}
+div.category-list li {
+  list-style: none;
+}
+
+div.category-list li a {
+  display: inline-block;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 22px;
+  color: black;
+  width: 150px;
+}
+
+div.category-list {
+  padding: 10px;
+}
+
+div.book-img {
+  padding: 0px;
+  text-align: left;
+  width: 130px;
+}
+div.book-img img {
+  width: 120px;
+  height: 190px;
+}
+
+div.book-details {
+  text-align: left;
+  font-size: 20px;
+  padding-left: 0px;
+  margin-left: -80px;
+  width: 1000px;
+}
+
+div.book-title p {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+p#book-title-name {
+  font-size: 24px;
+  max-width: 1000px;
+}
+p#book-detail-category {
+  font-size: 18px;
+}
+p#book-discounted-price {
+  color: #f100e5;
+}
+
+p#book-discounted-percent {
+  color: #f100e5;
+}
+
+.book-cart {
+  margin-left: 10px;
+}
+.book-cart button {
+  width: 150px;
+  height: 45px;
+  margin-top: 10px;
+}

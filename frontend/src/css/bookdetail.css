@@ -1,0 +1,15 @@
+div.book-detail-title {
+  font-size: 30px;
+  font-weight: 700;
+  text-align: left;
+}
+
+div.book-detail-img img {
+  width: 400px;
+  height: 600px;
+}
+
+div.book-detail-info-data p {
+  font-size: 20px;
+  margin-right: 10px;
+}
