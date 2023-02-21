@@ -1,11 +1,38 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { baseUrl } from "../components/commonApi/mainApi";
 
 //import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  // 네이버 로그인
+  const { naver } = window;
+  const location = useLocation();
+  const NAVER_CALLBACK_URL = "http://localhost:3000";
+  const NAVER_CLIENT_ID = "JF2FSSw35EeARO3tcAS1";
+
+  const getNaverToken = () => {
+    if (!location.hash) return;
+    const token = location.hash.split("=")[1].split("&")[0];
+    console.log(token);
+  };
+
+  useEffect(() => {
+    initializeNaverLogin();
+    getNaverToken();
+  }, []);
+
+  const initializeNaverLogin = () => {
+    const naverLogin = new naver.LoginWithNaverId({
+      clientId: NAVER_CLIENT_ID,
+      callbackUrl: NAVER_CALLBACK_URL,
+      isPopup: false,
+      loginButton: { color: "white", type: 1, height: "47" },
+    });
+    naverLogin.init();
+  };
+  // 자체로그인
   // const navigate = useNavigate();
   const [user_name, setUsername] = useState("");
   const [user_pwd, setPassword] = useState("");
@@ -95,6 +122,8 @@ const Login = () => {
               회원 가입
             </Link>
           </div>
+
+          <div className='grid-naver' id='naverIdLogin'></div>
         </form>
       </div>
     </div>
