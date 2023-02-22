@@ -12,6 +12,18 @@ const Login = () => {
   const NAVER_CALLBACK_URL = "http://localhost:3000";
   const NAVER_CLIENT_ID = "JF2FSSw35EeARO3tcAS1";
 
+  // 네이버 로그인, 버튼 구현
+  const initializeNaverLogin = () => {
+    const naverLogin = new naver.LoginWithNaverId({
+      clientId: NAVER_CLIENT_ID,
+      callbackUrl: NAVER_CALLBACK_URL,
+      isPopup: false, // 팝업창으로 띄울지, 새 페이지로 띄울지
+      loginButton: { color: "green", type: 3, height: "50" },
+    });
+
+    naverLogin.init();
+  };
+
   const getNaverToken = () => {
     if (!location.hash) return;
     const token = location.hash.split("=")[1].split("&")[0];
@@ -21,17 +33,9 @@ const Login = () => {
   useEffect(() => {
     initializeNaverLogin();
     getNaverToken();
+    console.log("init");
   }, []);
 
-  const initializeNaverLogin = () => {
-    const naverLogin = new naver.LoginWithNaverId({
-      clientId: NAVER_CLIENT_ID,
-      callbackUrl: NAVER_CALLBACK_URL,
-      isPopup: false,
-      loginButton: { color: "white", type: 1, height: "47" },
-    });
-    naverLogin.init();
-  };
   // 자체로그인
   // const navigate = useNavigate();
   const [user_name, setUsername] = useState("");
