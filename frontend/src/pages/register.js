@@ -1,3 +1,4 @@
+import { faL } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +17,36 @@ const RegisterPage = () => {
     user_role: "ROLE_MEMBER",
   });
 
+  //오류메세지
+  const errorMessage = {
+    user_name:
+      "사용자 ID는 5자 이상이어야 하며 문자 또는 숫자를 포함해야 합니다.",
+    user_pwd:
+      "최소 8자에 하나의 문자 및 하나의 숫자 및 하나의 특수 문자를 입력해주세요.",
+    user_confirmpwd: "비밀번호가 일치하지 않습니다.",
+    user_nickname:
+      "최소 2자에 영어,한글,숫자 상관없이 7자 안으로 입력해주세요.",
+    user_email: "이메일 형식에 맞게 작성해주세요.",
+    user_role: "ROLE_MEMBER",
+  };
+
+  //유효성 검사
+  const [effect, setEffect] = useState({
+    user_name: false,
+    user_pwd: false,
+    user_confirmpwd: false,
+    user_nickname: false,
+    user_email: false,
+  });
+
   const onSubmit = async (e) => {
+    const result = validChk("submit");
+    if (!result.valid) {
+      const msg = errorMessage[result.where];
+      alert("정보를 입력해주세요");
+    } else {
+      alert("가입완료");
+    }
     e.preventDefault();
 
     await axios
@@ -41,42 +71,87 @@ const RegisterPage = () => {
       });
   };
 
+  // 정규식
+
+  // 아이디 체크
+  // 사용자 ID는 5자 이상이어야 하며 문자 또는 숫자를 포함해야 합니다.
+  const validChk = (target) => {
+    if (target !== "submit" && target === "user_name") {
+      const idRegExp = /^[A-Za-z0-9+]{5,}$/;
+      if (!idRegExp.test(member.user_name)) {
+        setEffect({ ...effect, user_name: false });
+        return { valid: false, where: "user_name" };
+      } else {
+        setEffect({ ...effect, user_name: true });
+        console.log(effect);
+      }
+    }
+
+    // 비밀번호 체크
+    // 최소 8자에 하나의 문자 및 하나의 숫자 및 하나의 특수 문자 포함된 비밀번호인지
+    if (target !== "submit" && target === "user_pwd") {
+      const pwdRegExp =
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g;
+      if (!pwdRegExp.test(member.user_pwd)) {
+        setEffect({ ...effect, user_pwd: false });
+        return { valid: false, where: "user_pwd" };
+      } else {
+        setEffect({ ...effect, user_pwd: true });
+      }
+    }
+
+    // 비밀번호 확인
+    if (target !== "submit" && target === "user_confirmpwd") {
+      if (member.user_pwd !== member.user_confirmpwd) {
+        setEffect({ ...effect, user_confirmpwd: false });
+        return { valid: false, where: "user_comfirmpwd" };
+      } else {
+        setEffect({ ...effect, user_confirmpwd: true });
+      }
+    }
+
+    // 닉네임 확인
+    if (target !== "submit" && target === "user_nickname") {
+      const nicknameRegExp = /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,7}$/;
+      if (!nicknameRegExp.test(member.user_nickname)) {
+        setEffect({ ...effect, user_nickname: false });
+        return { valid: false, where: "user_nickname" };
+      } else {
+        setEffect({ ...effect, user_nickname: true });
+        console.log(effect);
+      }
+    }
+
+    if (target !== "submit" && target === "user_email") {
+      const emailRegExp =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!emailRegExp.test(member.user_email)) {
+        setEffect({ ...effect, user_email: false });
+        return { valid: false, where: "user_email" };
+      } else {
+        setEffect({ ...effect, user_email: true });
+      }
+    }
+
+    return true;
+  };
+
   const handleValueChange = (e) => {
     // radio 버튼에서는 e.preventDefault()를 하면 더블클릭을 해줘야한다.
     // e.preventDefault();
-    setMember({ ...member, [e.target.name]: e.target.value });
-    const currentId = e.target.value;
+    // setMember({ ...member, [e.target.name]: e.target.value });
+    // const currentId = e.target.value;
+    member[e.target.name] = e.target.value;
+
+    validChk(e.target.name);
   };
 
-  const [userIdError, setUserIdError] = useState(false);
-  const [PasswordError, setPasswordError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-
-  const onChangeUserId = (e) => {
-    const userIdRegex = /^[A-Za-z0-9+]{5,}$/;
-    if (!e.target.value || userIdRegex.test(e.target.value))
-      setUserIdError(false);
-    else setUserIdError(true);
-    setMember({ ...member, [e.target.name]: e.target.value });
-  };
-
-  const onChangePassword = (e) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    if (!e.target.value || passwordRegex.test(e.target.value))
-      setPasswordError(false);
-    else setPasswordError(true);
-
-    if (!member.user_confirmpwd || e.target.value === member.user_confirmpwd)
-      setConfirmPasswordError(false);
-    else setConfirmPasswordError(true);
-    setMember(e.target.value);
-  };
-
-  const onChangeConfirmPassword = (e) => {
-    if (member.user_pwd === e.target.value) setConfirmPasswordError(false);
-    else setConfirmPasswordError(true);
-    setMember(...member, e.target.value);
-  };
+  // 유효성 검사
+  // const [userIdError, setUserIdError] = useState(false);
+  // const [PasswordError, setPasswordError] = useState(false);
+  // const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  // const [userNicknameError, setUserNicknameError] = useState(false);
+  // const [emailError, setEmailError] = useState(false);
 
   return (
     <div className='container'>
@@ -87,17 +162,28 @@ const RegisterPage = () => {
             <label>아이디</label>
             <br />
             <input
-              value={member.user_name}
+              maxLength={15}
               type='text'
               className='form-control'
               name='user_name'
               placeholder='Username'
-              onChange={onChangeUserId}
+              onChange={handleValueChange}
             />
-            {userIdError && (
-              <div class='invalid-input'>
-                아이디는 5글자 이상, 숫자제외, 특수문자 제외
-              </div>
+            {/* 유효성체크 */}
+            {effect.user_name ? (
+              <span id='idMsg' style={{ color: "green" }}>
+                사용가능한 ID 입니다.
+              </span>
+            ) : (
+              <span id='idMsg' style={{ color: "red" }}>
+                {/* {message.username} */}
+              </span>
+            )}
+
+            {!effect.user_name && member.user_name.length > 0 && (
+              <span id='idMsg' style={{ color: "red" }}>
+                {errorMessage.user_name}
+              </span>
             )}
           </div>
 
@@ -106,19 +192,28 @@ const RegisterPage = () => {
             <br />
             <input
               maxLength={20}
-              value={member.user_pwd}
               type='password'
               className='form-control'
               name='user_pwd'
               placeholder='Password'
-              onChange={onChangePassword}
+              onChange={handleValueChange}
               autoComplete='off'
             />
-            {PasswordError && (
-              <div class='invalid-input'>
-                암호는 8자 이상이어야 하며 문자와 숫자를 하나 이상 포함해야
-                합니다.
-              </div>
+            {/* 유효성체크 */}
+            {effect.user_pwd ? (
+              <span id='idMsg' style={{ color: "green" }}>
+                사용가능한 비밀번호 입니다.
+              </span>
+            ) : (
+              <span id='idMsg' style={{ color: "red" }}>
+                {/* {message.username} */}
+              </span>
+            )}
+
+            {!effect.user_pwd && member.user_pwd.length > 0 && (
+              <span id='idMsg' style={{ color: "red" }}>
+                {errorMessage.user_pwd}
+              </span>
             )}
           </div>
 
@@ -132,11 +227,23 @@ const RegisterPage = () => {
               className='form-control'
               name='user_confirmpwd'
               placeholder='ConfirmPassword'
-              onChange={onChangeConfirmPassword}
+              onChange={handleValueChange}
               autoComplete='off'
             />
-            {confirmPasswordError && (
-              <div class='invalid-input'>암호가 일치하지 않습니다.</div>
+            {effect.user_confirmpwd ? (
+              <span id='idMsg' style={{ color: "green" }}>
+                비밀번호가 일치합니다.
+              </span>
+            ) : (
+              <span id='idMsg' style={{ color: "red" }}>
+                {/* {message.passwordConfirm} */}
+              </span>
+            )}
+
+            {!effect.user_confirmpwd && member.user_confirmpwd.length > 0 && (
+              <span id='idMsg' style={{ color: "red" }}>
+                {errorMessage.user_confirmpwd}
+              </span>
             )}
           </div>
 
@@ -144,23 +251,54 @@ const RegisterPage = () => {
             <label>닉네임</label>
             <br />
             <input
+              maxLength={20}
               type='text'
               className='form-control'
               name='user_nickname'
               placeholder='nickname'
               onChange={handleValueChange}
             />
+            {effect.user_nickname ? (
+              <span id='idMsg' style={{ color: "green" }}>
+                사용가능한 닉네임입니다
+              </span>
+            ) : (
+              <span id='idMsg' style={{ color: "red" }}>
+                {/* {errorMessage.user_nickname} */}
+              </span>
+            )}
+            {!effect.user_nickname && member.user_nickname.length > 0 && (
+              <span id='idMsg' style={{ color: "red" }}>
+                {errorMessage.user_nickname}
+              </span>
+            )}
           </div>
 
           <div className='form-group mb-1'>
             <label>이메일</label>
             <input
+              maxLength={50}
               type='email'
               className='form-control'
               name='user_email'
               placeholder='Email'
               onChange={handleValueChange}
             />
+            {effect.user_email ? (
+              <span id='idMsg' style={{ color: "green" }}>
+                사용가능한 이메일 입니다.
+              </span>
+            ) : (
+              <span id='idMsg' style={{ color: "red" }}>
+                {/* {errorMessage.user_email} */}
+              </span>
+            )}
+
+            {!effect.user_email && member.user_email.length > 0 && (
+              <span id='idMsg' style={{ color: "red" }}>
+                {errorMessage.user_email}
+              </span>
+            )}
           </div>
           <hr className='my-3' />
           <div className='form-group mb-3 mb-1'>
@@ -199,7 +337,7 @@ const RegisterPage = () => {
               </label>
             </div>
           </div>
-          <button type='submit' className='btn btn-primary'>
+          <button type='submit' className='btn btn-primary' onClick={onSubmit}>
             가입 완료
           </button>
         </div>
