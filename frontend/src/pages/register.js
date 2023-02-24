@@ -27,7 +27,6 @@ const RegisterPage = () => {
     user_nickname:
       "최소 2자에 영어,한글,숫자 상관없이 7자 안으로 입력해주세요.",
     user_email: "이메일 형식에 맞게 작성해주세요.",
-    user_role: "ROLE_MEMBER",
   };
 
   //유효성 검사
@@ -43,10 +42,9 @@ const RegisterPage = () => {
     const result = validChk("submit");
     if (!result.valid) {
       const msg = errorMessage[result.where];
-      alert("정보를 입력해주세요");
-    } else {
-      alert("가입완료");
+      alert(msg);
     }
+
     e.preventDefault();
 
     await axios

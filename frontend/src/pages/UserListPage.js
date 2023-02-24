@@ -1,11 +1,11 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { baseUrl } from '../components/commonApi/mainApi';
-import Pagination from '../components/commonApi/Pagination';
-import '../css/userlist.css';
-import '../css/bootstrap.min.css';
-import Table from 'react-bootstrap/Table';
-import Collapse from 'react-bootstrap/Collapse';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { baseUrl } from "../components/commonApi/mainApi";
+import Pagination from "../components/commonApi/Pagination";
+import "../css/userlist.css";
+import "../css/bootstrap.min.css";
+import Table from "react-bootstrap/Table";
+import Collapse from "react-bootstrap/Collapse";
 
 const UserListPage = () => {
   const [user, setUser] = useState([]);
@@ -14,20 +14,28 @@ const UserListPage = () => {
   const offset = (page - 1) * limit;
   const [open, setOpen] = useState(false);
 
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [role, setRole] = useState("");
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
   useEffect(() => {
     getUser();
   }, []);
 
   async function getUser() {
     await axios
-      .get(baseUrl + '/userlist')
+      .get(baseUrl + "/userlist")
       .then((response) => {
         setUser(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-    console.log('setUser added');
+    console.log("setUser added");
   }
 
   return (
@@ -89,11 +97,11 @@ const UserListPage = () => {
                 <Table>
                   <tbody>
                     <tr
-                      className='clickable'
-                      onClick={() => setOpen(!open)}
-                      aria-controls='collapse-text'
-                      aria-expanded={'#row' + user.user_id}
-                      id={'row' + user.user_id}
+                    // className='clickable'
+                    // onClick={() => setOpen(!open)}
+                    // aria-controls='collapse-text'
+                    // aria-expanded={"#row" + user.user_id}
+                    // id={"row" + user.user_id}
                     >
                       <th className='user_id'>{user.user_id}</th>
                       <td className='user_name'>{user.user_name}</td>
@@ -102,7 +110,15 @@ const UserListPage = () => {
                       <td className='user_role'>{user.user_role}</td>
                       <td className='create_date'>22/02/17</td>
                       <td className='modify_date'>22/12/29</td>
-                      <td className='user_modify'>수정</td>
+                      <td
+                        className='user_modify'
+                        onClick={() => setOpen(!open)}
+                        aria-controls='collapse-text'
+                        aria-expanded={"#row" + user.user_id}
+                        id={"row" + user.user_id}
+                      >
+                        수정
+                      </td>
                       <td className='user_delete'>삭제</td>
                     </tr>
                     <Collapse in={open}>
@@ -110,9 +126,11 @@ const UserListPage = () => {
                         <td
                           className='collapse-text'
                           colSpan='9'
-                          id={'row' + user.user_id}
+                          id={"row" + user.user_id}
                         >
-                          aa
+                          <button onClick={handleNameChange}>Name 수정</button>
+                          <button>Nickname 수정</button> &nbsp;
+                          <button>권한 변경</button>
                         </td>
                       </tr>
                     </Collapse>
