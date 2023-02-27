@@ -1,5 +1,7 @@
 import axios from "axios";
+
 import React, { useEffect, useState } from "react";
+
 import { Link, useLocation } from "react-router-dom";
 import { baseUrl } from "../components/commonApi/mainApi";
 
@@ -51,6 +53,13 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user_name) {
+      return alert("아이디를 입력하세요.");
+    } else if (!user_pwd) {
+      return alert("비밀번호를 입력하세요.");
+    }
+
     await axios
       .post(
         `${baseUrl}/login`,
@@ -64,8 +73,8 @@ const Login = () => {
       .then((response) => {
         // console.log("response:", response.data);
 
-        console.log(response.headers);
-        console.log(response.data);
+        // if (response) console.log(response.headers);
+        // console.log(response.data);
 
         // 값을 받을때는 소문자
         let jwtToken = response.headers["authorization"];
@@ -81,12 +90,15 @@ const Login = () => {
         setUsername("");
         setPassword("");
       })
+
       .then((response) => {
         // navigate("/");
         window.location.replace("/");
+        alert(`${localStorage.getItem("username")} 님 환영합니다`);
       })
       .catch((err) => {
-        console.error(err.message);
+        // console.error(err.message);
+        alert("아이디와 비밀번호를 확인해주세요");
       });
   };
 

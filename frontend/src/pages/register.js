@@ -1,5 +1,5 @@
-import { faL } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { response } from "express";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../components/commonApi/mainApi";
@@ -17,6 +17,10 @@ const RegisterPage = () => {
     user_role: "ROLE_MEMBER",
   });
 
+  const chkMessage = {
+    user_name: "이미 사용중인 아이디입니다.",
+  };
+
   //오류메세지
   const errorMessage = {
     user_name:
@@ -27,6 +31,7 @@ const RegisterPage = () => {
     user_nickname:
       "최소 2자에 영어,한글,숫자 상관없이 7자 안으로 입력해주세요.",
     user_email: "이메일 형식에 맞게 작성해주세요.",
+    user_role: "ROLE_MEMBER",
   };
 
   //유효성 검사
@@ -42,9 +47,8 @@ const RegisterPage = () => {
     const result = validChk("submit");
     if (!result.valid) {
       const msg = errorMessage[result.where];
-      alert(msg);
+      alert("가입완료");
     }
-
     e.preventDefault();
 
     await axios
@@ -73,15 +77,26 @@ const RegisterPage = () => {
 
   // 아이디 체크
   // 사용자 ID는 5자 이상이어야 하며 문자 또는 숫자를 포함해야 합니다.
-  const validChk = (target) => {
+  const validChk = (target, data) => {
+    var id = document.getElementById("id").value;
     if (target !== "submit" && target === "user_name") {
       const idRegExp = /^[A-Za-z0-9+]{5,}$/;
       if (!idRegExp.test(member.user_name)) {
         setEffect({ ...effect, user_name: false });
+        document.getElementById("idMsg").innerHTML =
+          "<span style='color: red;'>사용자 ID는 5자 이상이어야 하며 문자 또는 숫자를 포함해야 합니다.</span>";
         return { valid: false, where: "user_name" };
       } else {
-        setEffect({ ...effect, user_name: true });
-        console.log(effect);
+        if (data === 0) {
+          setEffect({ ...effect, user_name: true });
+          document.getElementById("idMsg").innerHTML =
+            "<span style='color: green;'>사용가능한 아이디입니다.</span>";
+          console.log(effect);
+        } else {
+          setEffect({ ...effect, user_name: false });
+          document.getElementById("idMsg").innerHTML =
+            "<span style='color: red;'>중복된 아이디입니다.</span>";
+        }
       }
     }
 
@@ -120,28 +135,65 @@ const RegisterPage = () => {
       }
     }
 
+    // 이메일 확인
+    var id2 = document.getElementById("email").value;
     if (target !== "submit" && target === "user_email") {
       const emailRegExp =
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!emailRegExp.test(member.user_email)) {
         setEffect({ ...effect, user_email: false });
+        document.getElementById("emailMsg").innerHTML =
+          "<span style='color:red;'>올바른 이메일 형식을 써주세요</span>";
         return { valid: false, where: "user_email" };
       } else {
-        setEffect({ ...effect, user_email: true });
+        if (data === 0) {
+          setEffect({ ...effect, user_email: true });
+          document.getElementById("emailMsg").innerHTML =
+            "<span style='color:green;'>사용가능한 이메일 입니다.</span>";
+          console.log(effect);
+        } else {
+          setEffect({ ...effect, user_email: false });
+          document.getElementById("emailMsg").innerHTML =
+            "<span style='color:red;>중복된 이메일입니다.</span>";
+        }
       }
     }
 
     return true;
   };
 
-  const handleValueChange = (e) => {
+  const handleValueChange = async (e) => {
     // radio 버튼에서는 e.preventDefault()를 하면 더블클릭을 해줘야한다.
     // e.preventDefault();
     // setMember({ ...member, [e.target.name]: e.target.value });
     // const currentId = e.target.value;
     member[e.target.name] = e.target.value;
+    console.log("bb: " + member);
+    console.log("bb: " + member[e.target.name]);
 
-    validChk(e.target.name);
+    const config = {
+      headers: { "Content-Type": "application/json" },
+    };
+
+    await axios
+      .post(baseUrl + "/idck", member, config)
+      .then((response) => {
+        console.log("id: " + response.data);
+        validChk(e.target.name, response.data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+
+    await axios
+      .post(baseUrl + "/emailck", member, config)
+      .then((response) => {
+        console.log("email:" + response.data);
+        validChk(e.target.name, response.data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
   };
 
   // 유효성 검사
@@ -161,28 +213,15 @@ const RegisterPage = () => {
             <br />
             <input
               maxLength={15}
+              id='id'
               type='text'
               className='form-control'
               name='user_name'
               placeholder='Username'
               onChange={handleValueChange}
             />
+            <span id='idMsg'></span>
             {/* 유효성체크 */}
-            {effect.user_name ? (
-              <span id='idMsg' style={{ color: "green" }}>
-                사용가능한 ID 입니다.
-              </span>
-            ) : (
-              <span id='idMsg' style={{ color: "red" }}>
-                {/* {message.username} */}
-              </span>
-            )}
-
-            {!effect.user_name && member.user_name.length > 0 && (
-              <span id='idMsg' style={{ color: "red" }}>
-                {errorMessage.user_name}
-              </span>
-            )}
           </div>
 
           <div className='form-group mb-1'>
@@ -257,9 +296,7 @@ const RegisterPage = () => {
               onChange={handleValueChange}
             />
             {effect.user_nickname ? (
-              <span id='idMsg' style={{ color: "green" }}>
-                사용가능한 닉네임입니다
-              </span>
+              <span id='nickMsg'></span>
             ) : (
               <span id='idMsg' style={{ color: "red" }}>
                 {/* {errorMessage.user_nickname} */}
@@ -282,21 +319,8 @@ const RegisterPage = () => {
               placeholder='Email'
               onChange={handleValueChange}
             />
-            {effect.user_email ? (
-              <span id='idMsg' style={{ color: "green" }}>
-                사용가능한 이메일 입니다.
-              </span>
-            ) : (
-              <span id='idMsg' style={{ color: "red" }}>
-                {/* {errorMessage.user_email} */}
-              </span>
-            )}
 
-            {!effect.user_email && member.user_email.length > 0 && (
-              <span id='idMsg' style={{ color: "red" }}>
-                {errorMessage.user_email}
-              </span>
-            )}
+            <span id='emailMsg'></span>
           </div>
           <hr className='my-3' />
           <div className='form-group mb-3 mb-1'>
