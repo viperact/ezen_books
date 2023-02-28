@@ -1,5 +1,4 @@
 import axios from "axios";
-import { response } from "express";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../components/commonApi/mainApi";
@@ -17,20 +16,11 @@ const RegisterPage = () => {
     user_role: "ROLE_MEMBER",
   });
 
-  const chkMessage = {
-    user_name: "이미 사용중인 아이디입니다.",
-  };
-
   //오류메세지
   const errorMessage = {
-    user_name:
-      "사용자 ID는 5자 이상이어야 하며 문자 또는 숫자를 포함해야 합니다.",
     user_pwd:
       "최소 8자에 하나의 문자 및 하나의 숫자 및 하나의 특수 문자를 입력해주세요.",
     user_confirmpwd: "비밀번호가 일치하지 않습니다.",
-    user_nickname:
-      "최소 2자에 영어,한글,숫자 상관없이 7자 안으로 입력해주세요.",
-    user_email: "이메일 형식에 맞게 작성해주세요.",
     user_role: "ROLE_MEMBER",
   };
 
@@ -44,33 +34,41 @@ const RegisterPage = () => {
   });
 
   const onSubmit = async (e) => {
-    const result = validChk("submit");
-    if (!result.valid) {
-      const msg = errorMessage[result.where];
-      alert("가입완료");
-    }
     e.preventDefault();
 
-    await axios
-      .post(`${baseUrl}/registerPage`, member, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        setMember({
-          user_name: "",
-          user_pwd: "",
-          user_confirmpwd: "",
-          user_nickname: "",
-          user_email: "",
-          user_role: "ROLE_MEMBER",
+    if (
+      effect.user_name &&
+      effect.user_nickname &&
+      effect.user_email &&
+      effect.user_pwd &&
+      effect.user_confirmpwd
+    ) {
+      alert("회원가입 성공");
+
+      await axios
+        .post(`${baseUrl}/registerPage`, member, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+          setMember({
+            user_name: "",
+            user_pwd: "",
+            user_confirmpwd: "",
+            user_nickname: "",
+            user_email: "",
+            user_role: "ROLE_MEMBER",
+          });
+        })
+        .then((response) => {
+          navigator("/");
+        })
+        .catch((err) => {
+          console.error(err.message);
         });
-      })
-      .then((response) => {
-        navigator("/");
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
+    } else {
+      alert("입력 정보를 확인해주세요");
+      return false;
+    }
   };
 
   // 정규식
@@ -78,7 +76,6 @@ const RegisterPage = () => {
   // 아이디 체크
   // 사용자 ID는 5자 이상이어야 하며 문자 또는 숫자를 포함해야 합니다.
   const validChk = (target, data) => {
-    var id = document.getElementById("id").value;
     if (target !== "submit" && target === "user_name") {
       const idRegExp = /^[A-Za-z0-9+]{5,}$/;
       if (!idRegExp.test(member.user_name)) {
@@ -125,36 +122,45 @@ const RegisterPage = () => {
 
     // 닉네임 확인
     if (target !== "submit" && target === "user_nickname") {
-      const nicknameRegExp = /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,7}$/;
+      const nicknameRegExp = /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,10}$/;
       if (!nicknameRegExp.test(member.user_nickname)) {
         setEffect({ ...effect, user_nickname: false });
+        document.getElementById("nameMsg").innerHTML =
+          "<span style='color: red;'>최소 2자에 영어,한글,숫자 상관없이 10자 안으로 입력해주세요.</span>";
         return { valid: false, where: "user_nickname" };
       } else {
-        setEffect({ ...effect, user_nickname: true });
-        console.log(effect);
+        if (data === 0) {
+          setEffect({ ...effect, user_nickname: true });
+          document.getElementById("nameMsg").innerHTML =
+            "<span style='color: green;'>사용가능한 닉네임 입니다.</span>";
+          console.log(effect);
+        } else {
+          setEffect({ ...effect, user_nickname: false });
+          document.getElementById("nameMsg").innerHTML =
+            "<span style='color: red;'>중복된 닉네임입니다.</span>";
+        }
       }
     }
 
     // 이메일 확인
-    var id2 = document.getElementById("email").value;
     if (target !== "submit" && target === "user_email") {
       const emailRegExp =
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!emailRegExp.test(member.user_email)) {
         setEffect({ ...effect, user_email: false });
         document.getElementById("emailMsg").innerHTML =
-          "<span style='color:red;'>올바른 이메일 형식을 써주세요</span>";
+          "<span style='color: red;'>올바른 이메일 형식을 써주세요.</span>";
         return { valid: false, where: "user_email" };
       } else {
         if (data === 0) {
           setEffect({ ...effect, user_email: true });
           document.getElementById("emailMsg").innerHTML =
-            "<span style='color:green;'>사용가능한 이메일 입니다.</span>";
+            "<span style='color: green;'>사용가능한 이메일 입니다</span>";
           console.log(effect);
         } else {
           setEffect({ ...effect, user_email: false });
           document.getElementById("emailMsg").innerHTML =
-            "<span style='color:red;>중복된 이메일입니다.</span>";
+            "<span style='color: red'>중복된 이메일입니다.</span>";
         }
       }
     }
@@ -184,11 +190,37 @@ const RegisterPage = () => {
       .catch((err) => {
         console.error(err.message);
       });
+  };
+
+  const emailValueChange = async (e) => {
+    member[e.target.name] = e.target.value;
+
+    const config = {
+      headers: { "Content-Type": "application/json" },
+    };
 
     await axios
       .post(baseUrl + "/emailck", member, config)
       .then((response) => {
-        console.log("email:" + response.data);
+        // console.log("email:" + response.data);
+        validChk(e.target.name, response.data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  };
+
+  const nickNameValueChange = async (e) => {
+    member[e.target.name] = e.target.value;
+
+    const config = {
+      headers: { "Content-Type": "application/json" },
+    };
+
+    await axios
+      .post(baseUrl + "/nameck", member, config)
+      .then((response) => {
+        // console.log("email:" + response.data);
         validChk(e.target.name, response.data);
       })
       .catch((err) => {
@@ -288,40 +320,32 @@ const RegisterPage = () => {
             <label>닉네임</label>
             <br />
             <input
+              id='name'
               maxLength={20}
               type='text'
               className='form-control'
               name='user_nickname'
               placeholder='nickname'
-              onChange={handleValueChange}
+              onChange={nickNameValueChange}
             />
-            {effect.user_nickname ? (
-              <span id='nickMsg'></span>
-            ) : (
-              <span id='idMsg' style={{ color: "red" }}>
-                {/* {errorMessage.user_nickname} */}
-              </span>
-            )}
-            {!effect.user_nickname && member.user_nickname.length > 0 && (
-              <span id='idMsg' style={{ color: "red" }}>
-                {errorMessage.user_nickname}
-              </span>
-            )}
+
+            <span id='nameMsg'></span>
           </div>
 
           <div className='form-group mb-1'>
             <label>이메일</label>
             <input
+              id='email'
               maxLength={50}
               type='email'
               className='form-control'
               name='user_email'
               placeholder='Email'
-              onChange={handleValueChange}
+              onChange={emailValueChange}
             />
-
             <span id='emailMsg'></span>
           </div>
+
           <hr className='my-3' />
           <div className='form-group mb-3 mb-1'>
             <div
