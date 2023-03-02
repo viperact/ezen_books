@@ -10,47 +10,53 @@ import { baseUrl } from "../components/commonApi/mainApi";
 const Login = () => {
   // 네이버 로그인
   const { naver } = window;
+
   const location = useLocation();
+
   const NAVER_CALLBACK_URL = "http://localhost:3000";
   const NAVER_CLIENT_ID = "JF2FSSw35EeARO3tcAS1";
 
   // 네이버 로그인, 버튼 구현
-  const initializeNaverLogin = () => {
-    const naverLogin = new naver.LoginWithNaverId({
-      clientId: NAVER_CLIENT_ID,
-      callbackUrl: NAVER_CALLBACK_URL,
-      isPopup: false, // 팝업창으로 띄울지, 새 페이지로 띄울지
-      loginButton: { color: "green", type: 3, height: "50" },
-    });
+  // const initializeNaverLogin = () => {
+  const naverLogin = new naver.LoginWithNaverId({
+    clientId: NAVER_CLIENT_ID,
+    callbackUrl: NAVER_CALLBACK_URL,
+    isPopup: false, // 팝업창으로 띄울지, 새 페이지로 띄울지
+    loginButton: { color: "green", type: 3, height: "50" },
+  });
 
-    naverLogin.init();
-    naverLogin.logout();
-  };
+  // naverLogin.logout();
+  // };
 
   const getNaverToken = () => {
     if (!location.hash) return;
-    const token = location.hash.split("=")[1].split("&")[0];
-    axios
-      .post(
-        `${process.env.REACT_APP_SERVER_API}/user/naver-login`,
-        {
-          token,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        window.location.replace("/");
-      });
+    const token = location.hash.split("=")[1].split("&")[0]; // 토큰 출력
     console.log(token);
+    // axios
+    //   .post(
+    //     `${process.env.REACT_APP_SERVER_API}/user/naver-login`,
+    //     {
+    //       token,
+    //     },
+    //     {
+    //       withCredentials: true,
+    //     }
+    //   )
+    //   .then((res) => {
+    //     window.location.replace("/");
+    //   });
   };
 
   useEffect(() => {
-    initializeNaverLogin();
     getNaverToken();
+    naverLogin.init();
     console.log("init");
   }, []);
+
+  const naverLogout = () => {
+    localStorage.removeItem("com.naver.nid.access_token");
+    window.location.reload();
+  };
 
   // 자체로그인
   // const navigate = useNavigate();
@@ -147,11 +153,14 @@ const Login = () => {
           <div className='mt-1'>
             <button type='submit' className='btn btn-primary'>
               로그인
-            </button>
+            </button>{" "}
+            &nbsp;
             <Link className='btn btn-primary' to='/registerPage'>
               회원 가입
             </Link>
           </div>
+
+          <br />
 
           <div className='grid-naver' id='naverIdLogin'></div>
         </form>
